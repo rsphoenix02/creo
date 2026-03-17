@@ -1,2 +1,2 @@
 # creo
-AI-powered ad creative analysis tool for performance marketers
+AI-powered ad creative analysis tool for performance marketers.
