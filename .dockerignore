@@ -1,0 +1,13 @@
+node_modules
+.next
+.git
+.claude
+.claude-flow
+.swarm
+claude project
+CREO-CLAUDE.md
+.gitignore
+.env*
+*.md
+DockerFile
+.dockerignore
