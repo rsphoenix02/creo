@@ -9,5 +9,5 @@ CREO-CLAUDE.md
 .gitignore
 .env*
 *.md
-DockerFile
+Dockerfile
 .dockerignore
