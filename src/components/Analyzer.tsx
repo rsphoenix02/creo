@@ -13,15 +13,17 @@ import TopImprovement from "./TopImprovement";
 export default function Analyzer() {
   const [adCopy, setAdCopy] = useState("");
   const [state, setState] = useState<AnalysisState>({ status: "idle" });
+  const [analyzedCopy, setAnalyzedCopy] = useState("");
 
-  const handleAnalyze = useCallback(async () => {
-    const trimmed = adCopy.trim();
+  const analyzeText = useCallback(async (text: string) => {
+    const trimmed = text.trim();
     if (!trimmed) return;
 
     setState({ status: "loading" });
 
     try {
       const result = await analyzeCopy(trimmed);
+      setAnalyzedCopy(trimmed);
       setState({ status: "success", result });
     } catch (err) {
       setState({
@@ -30,14 +32,18 @@ export default function Analyzer() {
           err instanceof Error ? err.message : "Something went wrong.",
       });
     }
-  }, [adCopy]);
+  }, []);
 
-  const handleExample = (copy: string) => {
+  const handleAnalyze = useCallback(() => {
+    analyzeText(adCopy);
+  }, [adCopy, analyzeText]);
+
+  const handleExample = useCallback((copy: string) => {
     setAdCopy(copy);
-    setState({ status: "idle" });
-  };
+  }, []);
 
   const wordCount = adCopy.trim().split(/\s+/).filter(Boolean).length;
+  const isStale = state.status === "success" && adCopy.trim() !== analyzedCopy;
 
   return (
     <section id="analyzer" className="py-24 md:py-32 lg:py-40 relative">
@@ -82,6 +88,7 @@ export default function Analyzer() {
                 <button
                   onClick={() => {
                     setAdCopy("");
+                    setAnalyzedCopy("");
                     setState({ status: "idle" });
                   }}
                   className="text-xs text-creo-muted-2 hover:text-creo-muted transition-colors"
@@ -223,49 +230,81 @@ export default function Analyzer() {
               exit={{ opacity: 0 }}
               className="mt-12"
             >
-              <div className="grid grid-cols-1 md:grid-cols-6 gap-4 items-stretch">
-                {/* Overall Score */}
-                <motion.div
-                  className="md:col-span-6"
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{
-                    type: "spring",
-                    stiffness: 100,
-                    damping: 20,
-                  }}
-                >
-                  <div className="card-bezel">
-                    <div className="card-bezel-inner flex flex-col items-center py-10">
-                      <span className="text-xs font-mono text-creo-muted-2 uppercase tracking-widest mb-6">
-                        Overall Score
-                      </span>
-                      <ScoreRing
-                        score={state.result.overall_score}
-                        size={140}
-                        strokeWidth={5}
-                      />
-                      <p className="text-creo-muted text-sm mt-4 font-body">
-                        across 5 dimensions
-                      </p>
+              {/* Stale scores indicator */}
+              <AnimatePresence>
+                {isStale && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.3 }}
+                    className="mb-4 flex items-center justify-center gap-2"
+                  >
+                    <span className="text-xs font-mono text-creo-muted-2">
+                      Input changed
+                    </span>
+                    <span className="text-xs text-creo-muted-2">&mdash;</span>
+                    <button
+                      onClick={handleAnalyze}
+                      className="text-xs font-mono text-creo-accent hover:underline"
+                    >
+                      Re-analyze
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              <motion.div
+                animate={{
+                  opacity: isStale ? 0.35 : 1,
+                  scale: isStale ? 0.985 : 1,
+                }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
+              >
+                <div className="grid grid-cols-1 md:grid-cols-6 gap-4 items-stretch">
+                  {/* Overall Score */}
+                  <motion.div
+                    className="md:col-span-6"
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 100,
+                      damping: 20,
+                    }}
+                  >
+                    <div className="card-bezel">
+                      <div className="card-bezel-inner flex flex-col items-center py-10">
+                        <span className="text-xs font-mono text-creo-muted-2 uppercase tracking-widest mb-6">
+                          Overall Score
+                        </span>
+                        <ScoreRing
+                          score={state.result.overall_score}
+                          size={140}
+                          strokeWidth={5}
+                        />
+                        <p className="text-creo-muted text-sm mt-4 font-body">
+                          across 5 dimensions
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                </motion.div>
+                  </motion.div>
 
-                {/* Dimension Cards — Bento layout */}
-                {DIMENSIONS.map((dim, i) => (
-                  <DimensionCard
-                    key={dim.key}
-                    label={dim.label}
-                    data={state.result[dim.key]}
-                    index={i}
-                    gridSpan={i < 2 ? "md:col-span-3" : "md:col-span-2"}
-                  />
-                ))}
+                  {/* Dimension Cards — Bento layout */}
+                  {DIMENSIONS.map((dim, i) => (
+                    <DimensionCard
+                      key={dim.key}
+                      label={dim.label}
+                      data={state.result[dim.key]}
+                      index={i}
+                      gridSpan={i < 2 ? "md:col-span-3" : "md:col-span-2"}
+                    />
+                  ))}
 
-                {/* Top Improvement */}
-                <TopImprovement text={state.result.top_improvement} />
-              </div>
+                  {/* Top Improvement */}
+                  <TopImprovement text={state.result.top_improvement} />
+                </div>
+              </motion.div>
             </motion.div>
           )}
         </AnimatePresence>
