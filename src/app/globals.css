@@ -20,11 +20,11 @@ body {
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
   }
 
   body {
     font-family: var(--font-body), system-ui, sans-serif;
-    overflow-x: hidden;
   }
 
   ::selection {
@@ -123,6 +123,38 @@ body {
   }
   .score-color-perfect {
     color: #e8ff47;
+  }
+
+  /* Dimension score cards */
+  .dimension-score-card {
+    @apply rounded-2xl p-4 flex flex-col cursor-pointer transition-all duration-300;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    min-height: 160px;
+  }
+
+  .dimension-score-card:hover {
+    border-color: rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .dimension-score-card.score-perfect { border-left: 3px solid #e8ff47; }
+  .dimension-score-card.score-high { border-left: 3px solid #22c55e; }
+  .dimension-score-card.score-mid { border-left: 3px solid #eab308; }
+  .dimension-score-card.score-mid-low { border-left: 3px solid #f97316; }
+  .dimension-score-card.score-low { border-left: 3px solid #ef4444; }
+  .dimension-score-card.score-none { border-left: 3px solid rgba(255, 255, 255, 0.06); }
+
+  /* CTA attention animation */
+  @keyframes cta-attention {
+    0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(232, 255, 71, 0.3); }
+    25% { transform: scale(1.03); box-shadow: 0 0 20px 4px rgba(232, 255, 71, 0.25); }
+    50% { transform: scale(1); box-shadow: 0 0 40px 8px rgba(232, 255, 71, 0.15); }
+    75% { transform: scale(1.02); box-shadow: 0 0 20px 4px rgba(232, 255, 71, 0.2); }
+  }
+
+  .cta-attention-pulse {
+    animation: cta-attention 0.8s ease-out;
   }
 
   /* Loading skeleton shimmer */

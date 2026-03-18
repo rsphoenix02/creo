@@ -146,15 +146,49 @@ function DimensionGridCard({
   icon,
   label,
   description,
+  featured = false,
 }: {
   index: number;
   icon: React.ReactNode;
   label: string;
   description: string;
+  featured?: boolean;
 }) {
+  if (featured) {
+    return (
+      <div className="card-bezel h-full">
+        <div className="card-bezel-inner h-full !p-5">
+          <div className="flex flex-col h-full">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-10 h-10 rounded-xl bg-creo-accent/10 flex items-center justify-center text-creo-accent flex-shrink-0">
+                {icon}
+              </div>
+              <div>
+                <span className="text-[10px] font-mono text-creo-accent/50 block mb-0.5">
+                  0{index + 1}
+                </span>
+                <h4 className="font-heading font-semibold text-base text-creo-text">
+                  {label}
+                </h4>
+              </div>
+            </div>
+            <p className="text-sm text-creo-muted leading-relaxed flex-1">
+              {description}
+            </p>
+            <div className="mt-3 pt-3 border-t border-white/[0.06]">
+              <div className="h-1 rounded-full bg-white/[0.04] overflow-hidden">
+                <div className="h-full rounded-full bg-creo-accent/40 w-full" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="card-bezel h-full">
-      <div className="card-bezel-inner h-full p-4">
+      <div className="card-bezel-inner h-full !p-4">
         <div className="flex items-start gap-3">
           <div className="w-9 h-9 rounded-lg bg-creo-accent/10 flex items-center justify-center text-creo-accent flex-shrink-0">
             {icon}
@@ -189,6 +223,15 @@ export default function Dimensions() {
   const gridOpacity = useTransform(scrollYProgress, [0.85, 1], [0, 1]);
   const gridY = useTransform(scrollYProgress, [0.85, 1], [30, 0]);
 
+  // Bento grid span config: card 0 is featured (wide), rest are standard
+  const bentoSpans = [
+    "col-span-2 md:col-span-4",  // Hook — featured wide card
+    "col-span-1 md:col-span-2",  // Value Prop
+    "col-span-1 md:col-span-2",  // Copy Flow
+    "col-span-1 md:col-span-2",  // CTA
+    "col-span-1 md:col-span-2",  // Audience
+  ];
+
   return (
     <section id="dimensions">
       {/* Scroll container — deck animation + grid crossfade */}
@@ -196,62 +239,69 @@ export default function Dimensions() {
         {/* Sticky inner — stays in viewport while user scrolls through */}
         <div className="sticky top-0 h-screen flex flex-col justify-center py-16 md:py-24 overflow-hidden">
           <div className="max-w-5xl mx-auto px-6 w-full">
-            {/* Section heading — always visible */}
-            <ScrollReveal>
+            {/* Section heading — always visible, uses whileInView for sticky safety */}
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "0px" }}
+              transition={{ type: "spring", stiffness: 100, damping: 20 }}
+            >
               <span className="font-mono text-xs text-creo-accent uppercase tracking-widest">
                 The Framework
               </span>
               <h2 className="font-heading font-bold text-3xl md:text-4xl text-creo-text mt-3 mb-4">
                 Five dimensions. One clear picture.
               </h2>
-            </ScrollReveal>
-
-            {/* Subtext + card deck — fades out as grid appears */}
-            <motion.div style={{ opacity: deckOpacity }}>
-              <p className="text-creo-muted text-base md:text-lg max-w-2xl mb-12">
-                Scroll to explore each dimension.
-              </p>
-
-              <div className="max-w-3xl mx-auto relative" style={{ height: 260 }}>
-                {DIMENSIONS.map((dim, i) => (
-                  <DeckCard
-                    key={dim.key}
-                    index={i}
-                    icon={dimensionIcons[i]}
-                    label={dim.label}
-                    description={dim.description}
-                    scrollYProgress={scrollYProgress}
-                  />
-                ))}
-              </div>
             </motion.div>
 
-            {/* Bento grid — fades in over the same space as deck fades out */}
-            <motion.div
-              className="absolute left-0 right-0 px-6"
-              style={{
-                opacity: gridOpacity,
-                y: gridY,
-                top: "50%",
-                pointerEvents: "none",
-              }}
-            >
-              <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-6 gap-3">
-                {DIMENSIONS.map((dim, i) => (
-                  <div
-                    key={dim.key}
-                    className={i < 3 ? "md:col-span-2" : "md:col-span-3"}
-                  >
-                    <DimensionGridCard
+            {/* Crossfade zone — deck and bento grid share this bounded space */}
+            <div className="relative overflow-hidden" style={{ height: "clamp(500px, 60vh, 560px)" }}>
+              {/* Deck: subtext + sliding cards — fades out */}
+              <motion.div
+                className="absolute inset-0"
+                style={{ opacity: deckOpacity }}
+              >
+                <p className="text-creo-muted text-base md:text-lg max-w-2xl mb-8 md:mb-12">
+                  Scroll to explore each dimension.
+                </p>
+
+                <div className="max-w-3xl mx-auto relative" style={{ height: 240 }}>
+                  {DIMENSIONS.map((dim, i) => (
+                    <DeckCard
+                      key={dim.key}
                       index={i}
                       icon={dimensionIcons[i]}
                       label={dim.label}
                       description={dim.description}
+                      scrollYProgress={scrollYProgress}
                     />
-                  </div>
-                ))}
-              </div>
-            </motion.div>
+                  ))}
+                </div>
+              </motion.div>
+
+              {/* Bento grid — fades in over the exact same space */}
+              <motion.div
+                className="absolute inset-0 flex items-start pt-2"
+                style={{
+                  opacity: gridOpacity,
+                  y: gridY,
+                }}
+              >
+                <div className="w-full grid grid-cols-2 md:grid-cols-6 gap-2 md:gap-3">
+                  {DIMENSIONS.map((dim, i) => (
+                    <div key={dim.key} className={`${bentoSpans[i]} h-full`}>
+                      <DimensionGridCard
+                        index={i}
+                        icon={dimensionIcons[i]}
+                        label={dim.label}
+                        description={dim.description}
+                        featured={i === 0}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+            </div>
           </div>
         </div>
       </div>

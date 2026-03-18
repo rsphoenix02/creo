@@ -35,10 +35,15 @@ export default function MagneticButton({
     y.set((e.clientY - centerY) * strength);
   };
 
-  const handleMouseLeave = () => {
+  const reset = () => {
     x.set(0);
     y.set(0);
     setIsHovered(false);
+  };
+
+  const handleClick = () => {
+    reset();
+    onClick?.();
   };
 
   return (
@@ -50,8 +55,9 @@ export default function MagneticButton({
       style={{ x, y }}
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={handleMouseLeave}
-      onClick={onClick}
+      onMouseLeave={reset}
+      onTouchEnd={reset}
+      onClick={handleClick}
       whileTap={{ scale: 0.97 }}
       data-hovered={isHovered}
     >
