@@ -188,22 +188,24 @@ function DimensionGridCard({
 
   return (
     <div className="card-bezel h-full">
-      <div className="card-bezel-inner h-full !p-4">
-        <div className="flex items-start gap-3">
-          <div className="w-9 h-9 rounded-lg bg-creo-accent/10 flex items-center justify-center text-creo-accent flex-shrink-0">
-            {icon}
+      <div className="card-bezel-inner h-full !p-5">
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-lg bg-creo-accent/10 flex items-center justify-center text-creo-accent flex-shrink-0">
+              {icon}
+            </div>
+            <div>
+              <span className="text-[10px] font-mono text-creo-accent/50 block mb-0.5">
+                0{index + 1}
+              </span>
+              <h4 className="font-heading font-semibold text-sm text-creo-text">
+                {label}
+              </h4>
+            </div>
           </div>
-          <div className="min-w-0">
-            <span className="text-[10px] font-mono text-creo-accent/50 block mb-0.5">
-              0{index + 1}
-            </span>
-            <h4 className="font-heading font-semibold text-sm text-creo-text mb-1">
-              {label}
-            </h4>
-            <p className="text-xs text-creo-muted leading-relaxed line-clamp-2">
-              {description}
-            </p>
-          </div>
+          <p className="text-sm text-creo-muted leading-relaxed">
+            {description}
+          </p>
         </div>
       </div>
     </div>
@@ -255,7 +257,7 @@ export default function Dimensions() {
             </motion.div>
 
             {/* Crossfade zone — deck and bento grid share this bounded space */}
-            <div className="relative overflow-hidden" style={{ height: "clamp(500px, 60vh, 560px)" }}>
+            <div className="relative overflow-hidden" style={{ height: "clamp(540px, 65vh, 640px)" }}>
               {/* Deck: subtext + sliding cards — fades out */}
               <motion.div
                 className="absolute inset-0"

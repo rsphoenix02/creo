@@ -48,6 +48,8 @@ export default function Navbar() {
         animate={{
           opacity: mounted ? 1 : 0,
           y: mounted ? 0 : -20,
+          maxWidth: mobileOpen ? 1280 : scrolled ? 580 : 1280,
+          borderRadius: mobileOpen ? 20 : scrolled ? 9999 : 0,
           paddingTop: scrolled ? 12 : 24,
           paddingBottom: scrolled ? 12 : 8,
           paddingLeft: 24,
@@ -57,12 +59,12 @@ export default function Navbar() {
         transition={{
           opacity: { duration: 0.5, ease: "easeOut", delay: mounted && !scrolled ? 0.2 : 0 },
           y: { duration: 0.5, ease: "easeOut", delay: mounted && !scrolled ? 0.2 : 0 },
+          maxWidth: mobileOpen ? { duration: 0 } : { type: "spring", stiffness: 180, damping: 28 },
+          borderRadius: mobileOpen ? { duration: 0 } : { type: "spring", stiffness: 180, damping: 28 },
           default: { type: "spring", stiffness: 180, damping: 28 },
         }}
         style={{
           width: "100%",
-          maxWidth: mobileOpen ? 1280 : scrolled ? 580 : 1280,
-          borderRadius: mobileOpen ? 20 : scrolled ? 9999 : 0,
           background: scrolled || mobileOpen ? "rgba(255, 255, 255, 0.04)" : "transparent",
           backdropFilter: scrolled || mobileOpen ? "blur(24px)" : "blur(0px)",
           WebkitBackdropFilter: scrolled || mobileOpen ? "blur(24px)" : "blur(0px)",
