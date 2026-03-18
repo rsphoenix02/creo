@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import MagneticButton from "./MagneticButton";
 import GridBackground from "./GridBackground";
+import AnimatedCounter from "./AnimatedCounter";
 
 const headlineWords = ["Never", "run", "a", "bad", "ad"];
 
@@ -207,28 +208,34 @@ export default function Hero() {
                   {/* Static score bars — no re-triggering animations */}
                   <div className="space-y-4">
                     {[
-                      { label: "Hook", score: 8, color: "#22C55E" },
-                      { label: "Value Prop", score: 6, color: "#EAB308" },
-                      { label: "Copy Flow", score: 7, color: "#22C55E" },
-                      { label: "CTA", score: 9, color: "#E8FF47" },
-                      { label: "Audience", score: 5, color: "#EAB308" },
-                    ].map((item) => (
+                      { label: "Hook", score: 8.4, color: "#22C55E" },
+                      { label: "Value Prop", score: 6.1, color: "#EAB308" },
+                      { label: "Copy Flow", score: 7.8, color: "#22C55E" },
+                      { label: "CTA", score: 9.2, color: "#E8FF47" },
+                      { label: "Audience", score: 5.5, color: "#EAB308" },
+                    ].map((item, i) => (
                       <div key={item.label} className="space-y-1.5">
                         <div className="flex justify-between items-center">
                           <span className="text-xs font-body text-creo-muted">{item.label}</span>
-                          <span
+                          <AnimatedCounter
+                            value={item.score}
+                            duration={1000}
+                            delay={800 + i * 150}
+                            decimals={1}
                             className="text-xs font-mono font-bold"
                             style={{ color: item.color }}
-                          >
-                            {item.score}
-                          </span>
+                          />
                         </div>
                         <div className="h-1.5 rounded-full bg-white/[0.06] overflow-hidden">
-                          <div
-                            className="h-full rounded-full transition-all duration-1000 ease-out"
-                            style={{
-                              backgroundColor: item.color,
-                              width: `${item.score * 10}%`,
+                          <motion.div
+                            className="h-full rounded-full"
+                            style={{ backgroundColor: item.color }}
+                            initial={{ width: "0%" }}
+                            animate={{ width: `${item.score * 10}%` }}
+                            transition={{
+                              duration: 1,
+                              ease: "easeOut",
+                              delay: 1.0 + i * 0.15,
                             }}
                           />
                         </div>
@@ -241,9 +248,13 @@ export default function Hero() {
                     <span className="text-xs font-heading font-medium text-creo-muted">
                       Overall Score
                     </span>
-                    <span className="text-2xl font-mono font-bold text-creo-accent">
-                      7.0
-                    </span>
+                    <AnimatedCounter
+                      value={7.4}
+                      duration={1400}
+                      delay={1600}
+                      decimals={1}
+                      className="text-2xl font-mono font-bold text-creo-accent"
+                    />
                   </div>
                 </div>
               </div>
