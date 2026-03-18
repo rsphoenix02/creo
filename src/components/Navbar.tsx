@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 const navLinks = [
   { label: "How It Works", target: "how-it-works" },
   { label: "Dimensions", target: "dimensions" },
-  { label: "Pricing", target: "pricing" },
+  { label: "Join Waitlist", target: "waitlist" },
 ] as const;
 
 export default function Navbar() {

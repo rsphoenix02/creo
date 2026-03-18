@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import MagneticButton from "./MagneticButton";
 import GridBackground from "./GridBackground";
 import AnimatedCounter from "./AnimatedCounter";
+import { Input } from "@/components/ui/input";
 
 const headlineWords = ["Never", "run", "a", "bad", "ad"];
 
@@ -30,10 +31,6 @@ const floatingOrbs = [
 ];
 
 export default function Hero() {
-  const scrollToAnalyzer = () => {
-    document.getElementById("analyzer")?.scrollIntoView({ behavior: "smooth" });
-  };
-
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden">
       {/* Animated dot grid background */}
@@ -139,44 +136,60 @@ export default function Hero() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ type: "spring", stiffness: 80, damping: 20, delay: 1.0 }}
             >
-              Paste your ad copy. Get structured analysis across 5 performance
-              dimensions. Know exactly what to fix before you spend a dollar.
+              AI-powered ad copy analysis across 5 performance dimensions.
+              Join the waitlist to get early access before we launch.
             </motion.p>
 
-            {/* CTA with shimmer effect */}
+            {/* Waitlist form */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ type: "spring", stiffness: 80, damping: 20, delay: 1.2 }}
+              className="max-w-md"
             >
-              <MagneticButton
-                onClick={scrollToAnalyzer}
-                className="group relative bg-creo-accent text-creo-bg font-heading font-semibold text-base px-8 py-4 rounded-full flex items-center gap-3 hover:brightness-110 transition-all duration-300 accent-glow overflow-hidden"
-              >
-                {/* Shimmer sweep */}
-                <motion.span
-                  className="absolute inset-0 pointer-events-none"
-                  style={{
-                    background:
-                      "linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.3) 50%, transparent 60%)",
-                    backgroundSize: "200% 100%",
-                  }}
-                  animate={{ backgroundPosition: ["200% 0", "-200% 0"] }}
-                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", repeatDelay: 2 }}
+              <div className="flex flex-col sm:flex-row gap-3">
+                <Input
+                  type="email"
+                  placeholder="you@example.com"
+                  className="flex-1 h-12 rounded-full px-5"
                 />
-                <span className="relative z-10 flex items-center gap-3">
-                  Analyze Your Copy
-                  <svg
-                    className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2.5}
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                  </svg>
-                </span>
-              </MagneticButton>
+                <MagneticButton
+                  className="group relative bg-creo-accent text-creo-bg font-heading font-semibold text-sm h-12 px-6 rounded-full flex items-center justify-center gap-2 hover:brightness-110 transition-all duration-300 accent-glow overflow-hidden whitespace-nowrap"
+                >
+                  {/* Shimmer sweep */}
+                  <motion.span
+                    className="absolute inset-0 pointer-events-none rounded-full"
+                    style={{
+                      background:
+                        "linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.3) 50%, transparent 60%)",
+                      backgroundSize: "200% 100%",
+                    }}
+                    animate={{ backgroundPosition: ["200% 0", "-200% 0"] }}
+                    transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", repeatDelay: 2 }}
+                  />
+                  <span className="relative z-10 flex items-center gap-2">
+                    Get Early Access
+                    <svg
+                      className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2.5}
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    </svg>
+                  </span>
+                </MagneticButton>
+              </div>
+
+              <motion.p
+                className="text-creo-muted-2 text-xs font-mono mt-3"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1.5, duration: 0.6 }}
+              >
+                No spam, ever. We&apos;ll only email you when we launch.
+              </motion.p>
             </motion.div>
           </div>
 
