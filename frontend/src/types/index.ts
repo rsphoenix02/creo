@@ -20,6 +20,7 @@ export interface DimensionMeta {
   key: DimensionKey;
   label: string;
   description: string;
+  tagline: string;
 }
 
 export type AnalysisState =

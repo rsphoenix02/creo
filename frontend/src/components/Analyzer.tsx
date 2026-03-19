@@ -223,7 +223,7 @@ export default function Analyzer() {
                         <DimensionScoreCard
                           index={i}
                           label={dim.label}
-                          description={dim.description}
+                          description={dim.tagline}
                           score={null}
                           colorClass="score-none"
                           delay={0.05 * i}
@@ -399,7 +399,7 @@ export default function Analyzer() {
                             <DimensionScoreCard
                               index={i}
                               label={dim.label}
-                              description={dim.description}
+                              description={dim.tagline}
                               reasoning={data.reasoning}
                               suggestion={data.suggestion}
                               score={data.score}

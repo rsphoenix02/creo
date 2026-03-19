@@ -264,7 +264,7 @@ export default function Dimensions() {
                 style={{ opacity: deckOpacity }}
               >
                 <p className="text-creo-muted text-base md:text-lg max-w-2xl mb-8 md:mb-12">
-                  Scroll to explore each dimension.
+                  Every ad is scored across five distinct lenses — so you know exactly where it&apos;s strong and where it breaks down.
                 </p>
 
                 <div className="max-w-3xl mx-auto relative" style={{ height: 240 }}>

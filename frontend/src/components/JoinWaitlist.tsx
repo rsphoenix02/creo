@@ -35,9 +35,8 @@ export default function JoinWaitlist() {
           </h2>
 
           <p className="text-creo-muted max-w-lg mx-auto mt-4 mb-8 text-sm md:text-base text-center font-body leading-relaxed">
-            Creo is building the future of ad copy analysis. Be the first to get
-            access to AI-powered scoring across five dimensions — hook strength,
-            value proposition, copy flow, CTA effectiveness, and audience fit.
+            CREO gives marketers a scoring system for ad copy that actually
+            predicts performance. Be the first to get access when we launch.
           </p>
 
           {state.status === "success" ? (

@@ -145,8 +145,8 @@ export default function Hero() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ type: "spring", stiffness: 80, damping: 20, delay: 1.0 }}
             >
-              AI-powered ad copy analysis across 5 performance dimensions.
-              Join the waitlist to get early access before we launch.
+              For marketers tired of guessing which ads will work.
+              Find out exactly why your copy isn&apos;t converting — and how to fix it in minutes.
             </motion.p>
 
             {/* Waitlist form */}

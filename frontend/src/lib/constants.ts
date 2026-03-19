@@ -4,30 +4,35 @@ export const DIMENSIONS: DimensionMeta[] = [
   {
     key: "hook_strength",
     label: "Hook Strength",
+    tagline: "Is your first line stopping the scroll?",
     description:
       "Does the first line stop the scroll? We measure opening impact, curiosity triggers, and emotional activation.",
   },
   {
     key: "value_proposition",
     label: "Value Proposition",
+    tagline: "Clear benefits over feature lists.",
     description:
       "Is it obvious what the product does and why the reader should care? We check for clear benefits over features.",
   },
   {
     key: "copy_flow",
     label: "Copy Flow",
+    tagline: "Does each sentence earn the next?",
     description:
       "Does each sentence earn the next? We analyze rhythm, transitions, and whether the structure holds attention.",
   },
   {
     key: "cta_effectiveness",
     label: "CTA Effectiveness",
+    tagline: "Urgency, clarity, and low friction.",
     description:
       "Does the call to action create urgency and reduce friction? We evaluate specificity, positioning, and commitment level.",
   },
   {
     key: "audience_fit",
     label: "Audience Fit",
+    tagline: "Right tone for the right people.",
     description:
       "Does the tone match the target? We assess language register, cultural signals, and trust-building alignment.",
   },

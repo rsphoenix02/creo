@@ -9,7 +9,7 @@ const steps = [
     number: "01",
     title: "Paste your ad copy",
     description:
-      "Drop in any short-form persuasive copy — Facebook ads, Google ads, landing page headlines, email subject lines.",
+      "Drop in any short-form persuasive copy — Facebook ads, Google ads, LinkedIn ads, landing page headlines, email subject lines.",
   },
   {
     number: "02",
@@ -19,9 +19,9 @@ const steps = [
   },
   {
     number: "03",
-    title: "Fix what matters, run better ads",
+    title: "Fix what matters before you spend a dollar",
     description:
-      "Get specific, actionable suggestions ranked by impact. Know exactly what to change before you spend a dollar.",
+      "Get specific, actionable suggestions ranked by impact. Catch weak copy before it eats your budget — not after.",
   },
 ];
 

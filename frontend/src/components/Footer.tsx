@@ -18,7 +18,7 @@ export default function Footer() {
 
             {/* Center — Builder credit */}
             <div className="text-sm text-creo-muted-2">
-              Built with FastAPI + Claude API
+              Ad copy scoring that predicts performance.
             </div>
 
             {/* Right — Links */}
