@@ -40,10 +40,6 @@ steps:
       - '0'
       - '--max-instances'
       - '3'
-      - '--set-secrets'
-      - 'DATABASE_URL=DATABASE_URL:latest,ANTHROPIC_API_KEY=ANTHROPIC_API_KEY:latest'
-      - '--set-env-vars'
-      - 'ALLOWED_ORIGINS=["https://creo-web-HASH.a.run.app"]'
 
 substitutions:
   _REGION: 'asia-south1'
