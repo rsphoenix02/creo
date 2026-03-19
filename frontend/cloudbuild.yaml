@@ -42,7 +42,7 @@ steps:
       - '3'
 
 substitutions:
-  _REGION: 'us-central1'
+  _REGION: 'asia-south1'
   _SERVICE_NAME: 'creo-web'
   _ARTIFACT_REPO: 'creo'
 

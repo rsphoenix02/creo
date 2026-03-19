@@ -46,7 +46,7 @@ steps:
       - 'ALLOWED_ORIGINS=["https://creo-web-HASH.a.run.app"]'
 
 substitutions:
-  _REGION: 'us-central1'
+  _REGION: 'asia-south1'
   _SERVICE_NAME: 'creo-api'
   _ARTIFACT_REPO: 'creo'
 
