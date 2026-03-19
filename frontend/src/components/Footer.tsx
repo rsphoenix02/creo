@@ -24,7 +24,7 @@ export default function Footer() {
             {/* Right — Links */}
             <div className="flex items-center gap-6 text-sm text-creo-muted-2">
               <a
-                href="https://github.com"
+                href="https://github.com/rsphoenix02/creo/tree/deploy/monorepo"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:text-creo-text transition-colors duration-300"
@@ -32,7 +32,7 @@ export default function Footer() {
                 GitHub
               </a>
               <a
-                href="https://linkedin.com"
+                href="https://www.linkedin.com/in/saquibahmed02/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:text-creo-text transition-colors duration-300"

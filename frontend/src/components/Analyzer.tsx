@@ -103,8 +103,8 @@ export default function Analyzer() {
 
         {/* Side-by-side layout: input left, results right */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
-          {/* Left column — input (sticky on desktop) */}
-          <div className="lg:col-span-5 lg:sticky lg:top-24 z-10">
+          {/* Left column — input */}
+          <div className="lg:col-span-5 z-10">
             {/* Input area */}
             <motion.div
               className="card-bezel mb-4"
@@ -119,7 +119,7 @@ export default function Analyzer() {
                   onChange={(e) => setAdCopy(e.target.value)}
                   placeholder="Paste your ad copy here..."
                   rows={10}
-                  className="w-full bg-transparent text-creo-text placeholder:text-creo-muted-2 font-body text-base leading-relaxed p-5 rounded-xl resize-none focus:outline-none focus:ring-1 focus:ring-creo-accent/30 focus:shadow-[0_0_20px_rgba(232,255,71,0.08)] transition-all duration-500 lg:min-h-[280px]"
+                  className="w-full bg-transparent text-creo-text placeholder:text-creo-muted-2 font-body text-base leading-relaxed p-5 rounded-xl resize-none focus:outline-none focus:ring-1 focus:ring-creo-accent/30 focus:shadow-[0_0_20px_rgba(232,255,71,0.08)] transition-all duration-500 lg:min-h-[420px]"
                 />
                 <div className="flex items-center justify-between px-5 pb-3">
                   <span className="text-xs font-mono text-creo-muted-2">
@@ -256,7 +256,7 @@ export default function Analyzer() {
                     {DIM_SPANS.map((spanClass, i) => (
                       <div key={i} className={spanClass}>
                         <div className="card-bezel">
-                          <div className="card-bezel-inner !p-4 space-y-2 h-28">
+                          <div className="card-bezel-inner !p-4 space-y-2 h-[154px]">
                             <div className="h-3 w-20 rounded skeleton" />
                             <div className="h-2 w-full rounded skeleton" />
                             <div className="h-2 w-3/4 rounded skeleton" />

@@ -80,7 +80,7 @@ function DeckCard({
 
   return (
     <motion.div
-      className="absolute inset-0"
+      className="absolute inset-0 overflow-hidden rounded-2xl"
       style={{
         y: index === 0 ? y : combinedY,
         scale,
@@ -257,7 +257,7 @@ export default function Dimensions() {
             </motion.div>
 
             {/* Crossfade zone — deck and bento grid share this bounded space */}
-            <div className="relative overflow-hidden" style={{ height: "clamp(540px, 65vh, 640px)" }}>
+            <div className="relative overflow-hidden h-[780px] md:h-[clamp(540px,65vh,640px)]">
               {/* Deck: subtext + sliding cards — fades out */}
               <motion.div
                 className="absolute inset-0"
@@ -267,7 +267,7 @@ export default function Dimensions() {
                   Every ad is scored across five distinct lenses — so you know exactly where it&apos;s strong and where it breaks down.
                 </p>
 
-                <div className="max-w-3xl mx-auto relative" style={{ height: 240 }}>
+                <div className="max-w-3xl mx-auto relative h-[350px] md:h-[240px]">
                   {DIMENSIONS.map((dim, i) => (
                     <DeckCard
                       key={dim.key}
