@@ -68,6 +68,46 @@ function generateMockResult(): AnalysisResult {
   };
 }
 
+export async function joinWaitlist(
+  email: string,
+  source: string = "landing"
+): Promise<{ success: boolean; message: string }> {
+  if (!API_BASE) {
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    return { success: true, message: "You're on the list!" };
+  }
+
+  const response = await fetch(`${API_BASE}/api/v1/waitlist`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, source }),
+  });
+
+  if (!response.ok) {
+    const data = await response.json().catch(() => null);
+    throw new Error(data?.detail?.[0]?.msg ?? "Invalid email. Please try again.");
+  }
+
+  return response.json();
+}
+
+export async function getWaitlistCount(): Promise<number> {
+  if (!API_BASE) return 142;
+
+  const response = await fetch(`${API_BASE}/api/v1/waitlist/count`);
+  if (!response.ok) return 0;
+
+  const data = await response.json();
+  return data.count;
+}
+
+export class RateLimitError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "RateLimitError";
+  }
+}
+
 export async function analyzeCopy(adCopy: string): Promise<AnalysisResult> {
   if (!API_BASE) {
     await new Promise((resolve) => setTimeout(resolve, 2500));
@@ -81,6 +121,12 @@ export async function analyzeCopy(adCopy: string): Promise<AnalysisResult> {
   });
 
   if (!response.ok) {
+    if (response.status === 429) {
+      const data = await response.json().catch(() => null);
+      throw new RateLimitError(
+        data?.message ?? "You've used all your free analyses. Sign up for full access."
+      );
+    }
     throw new Error("Analysis failed. Please try again.");
   }
 

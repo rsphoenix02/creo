@@ -8,6 +8,8 @@ interface DimensionScoreCardProps {
   index: number;
   label: string;
   description: string;
+  reasoning?: string;
+  suggestion?: string;
   score: number | null;
   colorClass: string;
   onClick?: () => void;
@@ -18,11 +20,14 @@ export default function DimensionScoreCard({
   index,
   label,
   description,
+  reasoning,
+  suggestion,
   score,
   colorClass,
   onClick,
   delay = 0,
 }: DimensionScoreCardProps) {
+  const hasApiData = Boolean(reasoning || suggestion);
   const scoreColor = score !== null ? getScoreColor(score) : undefined;
   const progressWidth = score !== null ? `${score * 10}%` : "0%";
 
@@ -67,10 +72,36 @@ export default function DimensionScoreCard({
         {label}
       </h3>
 
-      {/* Description */}
-      <p className="text-[11px] text-white/40 leading-relaxed mb-4 line-clamp-2">
-        {description}
-      </p>
+      {/* Reasoning + Suggestion (from API) or static description */}
+      {hasApiData ? (
+        <div className="mb-4 space-y-2">
+          {reasoning && (
+            <p className="text-xs text-white/50 leading-relaxed">
+              {reasoning}
+            </p>
+          )}
+          {suggestion && (
+            <div className="flex items-start gap-1.5 pt-1.5 border-t border-white/[0.06]">
+              <svg
+                className="w-3 h-3 text-creo-accent mt-0.5 flex-shrink-0"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+              <p className="text-xs text-white/60 leading-relaxed">
+                {suggestion}
+              </p>
+            </div>
+          )}
+        </div>
+      ) : (
+        <p className="text-[11px] text-white/40 leading-relaxed mb-4">
+          {description}
+        </p>
+      )}
 
       {/* Progress bar */}
       <div className="mt-auto">

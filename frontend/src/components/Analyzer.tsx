@@ -3,7 +3,7 @@
 import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { AnalysisState } from "@/types";
-import { analyzeCopy, getScoreColor } from "@/lib/api";
+import { analyzeCopy, getScoreColor, RateLimitError } from "@/lib/api";
 import { EXAMPLE_COPIES, DIMENSIONS } from "@/lib/constants";
 import MagneticButton from "./MagneticButton";
 import ScoreRing from "./ScoreRing";
@@ -18,11 +18,11 @@ function getScoreClass(score: number): string {
 }
 
 const DIM_SPANS = [
+  "md:col-span-1",
+  "md:col-span-1",
+  "md:col-span-1",
+  "md:col-span-1",
   "md:col-span-2",
-  "md:col-span-2",
-  "md:col-span-2",
-  "md:col-span-3",
-  "md:col-span-3",
 ];
 
 export default function Analyzer() {
@@ -31,6 +31,7 @@ export default function Analyzer() {
   const [analyzedCopy, setAnalyzedCopy] = useState("");
   const [ctaAttention, setCtaAttention] = useState(false);
   const [showWaitlistModal, setShowWaitlistModal] = useState(false);
+  const [showRateLimitModal, setShowRateLimitModal] = useState(false);
 
   const handleCardClick = useCallback(() => {
     // Mobile: show bottom-sheet modal (CTA is off-screen)
@@ -54,11 +55,16 @@ export default function Analyzer() {
       setAnalyzedCopy(trimmed);
       setState({ status: "success", result });
     } catch (err) {
-      setState({
-        status: "error",
-        message:
-          err instanceof Error ? err.message : "Something went wrong.",
-      });
+      if (err instanceof RateLimitError) {
+        setState({ status: "rate_limited", message: err.message });
+        setShowRateLimitModal(true);
+      } else {
+        setState({
+          status: "error",
+          message:
+            err instanceof Error ? err.message : "Something went wrong.",
+        });
+      }
     }
   }, []);
 
@@ -89,6 +95,9 @@ export default function Analyzer() {
           </h2>
           <p className="text-creo-muted text-base md:text-lg">
             Paste any ad copy and get instant, structured analysis.
+            <span className="block text-sm text-creo-muted-2 mt-1">
+              3 free analyses included &mdash; no sign-up required.
+            </span>
           </p>
         </motion.div>
 
@@ -157,7 +166,7 @@ export default function Analyzer() {
             {/* Analyze button */}
             <MagneticButton
               onClick={handleAnalyze}
-              disabled={!adCopy.trim() || state.status === "loading"}
+              disabled={!adCopy.trim() || state.status === "loading" || state.status === "rate_limited"}
               className="w-full bg-creo-accent text-creo-bg font-heading font-semibold text-base py-4 rounded-xl hover:brightness-110 transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed accent-glow"
             >
               {state.status === "loading" ? (
@@ -170,6 +179,8 @@ export default function Analyzer() {
                   />
                   Analyzing...
                 </span>
+              ) : state.status === "rate_limited" ? (
+                "No free analyses left"
               ) : (
                 "Analyze"
               )}
@@ -206,7 +217,7 @@ export default function Analyzer() {
                   </div>
 
                   {/* Placeholder dimension cards with null scores */}
-                  <div className="grid grid-cols-1 md:grid-cols-6 gap-2">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {DIMENSIONS.map((dim, i) => (
                       <div key={dim.key} className={DIM_SPANS[i]}>
                         <DimensionScoreCard
@@ -241,11 +252,11 @@ export default function Analyzer() {
                       </div>
                     </div>
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-6 gap-2">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {DIM_SPANS.map((spanClass, i) => (
                       <div key={i} className={spanClass}>
                         <div className="card-bezel">
-                          <div className="card-bezel-inner !p-3 space-y-2 h-24">
+                          <div className="card-bezel-inner !p-4 space-y-2 h-28">
                             <div className="h-3 w-20 rounded skeleton" />
                             <div className="h-2 w-full rounded skeleton" />
                             <div className="h-2 w-3/4 rounded skeleton" />
@@ -277,6 +288,38 @@ export default function Analyzer() {
                       <p className="text-creo-muted text-sm mb-4">{state.message}</p>
                       <button onClick={handleAnalyze} className="text-sm font-heading font-semibold text-creo-accent hover:underline">
                         Try again
+                      </button>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+
+              {/* RATE LIMITED */}
+              {state.status === "rate_limited" && (
+                <motion.div
+                  key="rate-limited"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ type: "spring", stiffness: 100, damping: 20 }}
+                >
+                  <div className="card-bezel">
+                    <div className="card-bezel-inner text-center py-10">
+                      <div className="w-12 h-12 rounded-full bg-creo-accent/10 flex items-center justify-center mx-auto mb-4">
+                        <svg className="w-6 h-6 text-creo-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                        </svg>
+                      </div>
+                      <p className="text-creo-text font-heading font-semibold mb-2">Free analyses used up</p>
+                      <p className="text-creo-muted text-sm mb-5 max-w-xs mx-auto">{state.message}</p>
+                      <button
+                        onClick={() => {
+                          const el = document.getElementById("waitlist");
+                          if (el) el.scrollIntoView({ behavior: "smooth" });
+                        }}
+                        className="bg-creo-accent text-creo-bg font-heading font-semibold text-sm px-6 py-2.5 rounded-xl hover:brightness-110 transition-all accent-glow"
+                      >
+                        Join Waitlist
                       </button>
                     </div>
                   </div>
@@ -347,8 +390,8 @@ export default function Analyzer() {
                       </div>
                     </motion.div>
 
-                    {/* Dimension score cards — teaser bento grid */}
-                    <div className="grid grid-cols-1 md:grid-cols-6 gap-2">
+                    {/* Dimension score cards — bento grid */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       {DIMENSIONS.map((dim, i) => {
                         const data = state.result[dim.key];
                         return (
@@ -357,6 +400,8 @@ export default function Analyzer() {
                               index={i}
                               label={dim.label}
                               description={dim.description}
+                              reasoning={data.reasoning}
+                              suggestion={data.suggestion}
                               score={data.score}
                               colorClass={getScoreClass(data.score)}
                               onClick={handleCardClick}
@@ -403,6 +448,62 @@ export default function Analyzer() {
           </div>
         </div>
       </div>
+
+      {/* Rate limit modal — shown on all devices when free trials exhausted */}
+      <AnimatePresence>
+        {showRateLimitModal && (
+          <>
+            <motion.div
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowRateLimitModal(false)}
+            />
+            <motion.div
+              className="fixed inset-0 z-50 flex items-center justify-center px-4 sm:px-0"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            >
+              <div className="w-full max-w-sm rounded-2xl p-[1px] bg-gradient-to-b from-creo-accent/30 via-creo-accent/10 to-white/[0.06]">
+                <div className="rounded-[15px] bg-creo-surface px-6 py-8">
+                  <div className="flex flex-col items-center text-center">
+                    <div className="w-14 h-14 rounded-2xl bg-creo-accent/10 flex items-center justify-center mb-4">
+                      <svg className="w-7 h-7 text-creo-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                    <h3 className="font-heading font-bold text-lg text-creo-text mb-2">
+                      You&apos;ve used your 3 free analyses
+                    </h3>
+                    <p className="text-sm text-creo-muted leading-relaxed mb-6 max-w-xs">
+                      Join the waitlist to get early access when we launch unlimited analyses, detailed rewrites, and competitor benchmarks.
+                    </p>
+                    <button
+                      className="w-full bg-creo-accent text-creo-bg font-heading font-semibold text-sm py-3.5 rounded-xl hover:brightness-110 transition-all accent-glow"
+                      onClick={() => {
+                        setShowRateLimitModal(false);
+                        const el = document.getElementById("waitlist");
+                        if (el) el.scrollIntoView({ behavior: "smooth" });
+                      }}
+                    >
+                      Join Waitlist
+                    </button>
+                    <button
+                      className="mt-3 text-xs text-creo-muted hover:text-creo-text transition-colors"
+                      onClick={() => setShowRateLimitModal(false)}
+                    >
+                      Maybe later
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
 
       {/* Mobile waitlist bottom-sheet modal */}
       <AnimatePresence>

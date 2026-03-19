@@ -1,10 +1,12 @@
 "use client";
 
+import React from "react";
 import { motion } from "framer-motion";
 import MagneticButton from "./MagneticButton";
 import GridBackground from "./GridBackground";
 import AnimatedCounter from "./AnimatedCounter";
 import { Input } from "@/components/ui/input";
+import { useWaitlist } from "@/lib/use-waitlist";
 
 const headlineWords = ["Never", "run", "a", "bad", "ad"];
 
@@ -31,6 +33,13 @@ const floatingOrbs = [
 ];
 
 export default function Hero() {
+  const { email, setEmail, state, submit } = useWaitlist("hero");
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    submit();
+  };
+
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden">
       {/* Animated dot grid background */}
@@ -147,49 +156,73 @@ export default function Hero() {
               transition={{ type: "spring", stiffness: 80, damping: 20, delay: 1.2 }}
               className="max-w-md"
             >
-              <div className="flex flex-col sm:flex-row gap-3">
-                <Input
-                  type="email"
-                  placeholder="you@example.com"
-                  className="flex-1 h-12 rounded-full px-5"
-                />
-                <MagneticButton
-                  className="group relative bg-creo-accent text-creo-bg font-heading font-semibold text-sm h-12 px-6 rounded-full flex items-center justify-center gap-2 hover:brightness-110 transition-all duration-300 accent-glow overflow-hidden whitespace-nowrap"
-                >
-                  {/* Shimmer sweep */}
-                  <motion.span
-                    className="absolute inset-0 pointer-events-none rounded-full"
-                    style={{
-                      background:
-                        "linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.3) 50%, transparent 60%)",
-                      backgroundSize: "200% 100%",
-                    }}
-                    animate={{ backgroundPosition: ["200% 0", "-200% 0"] }}
-                    transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", repeatDelay: 2 }}
-                  />
-                  <span className="relative z-10 flex items-center gap-2">
-                    Get Early Access
-                    <svg
-                      className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={2.5}
+              {state.status === "success" ? (
+                <div>
+                  <p className="text-creo-accent font-heading font-semibold text-lg mb-1">
+                    {state.message}
+                  </p>
+                  <p className="text-creo-muted-2 text-xs font-mono">
+                    We&apos;ll email you when we launch.
+                  </p>
+                </div>
+              ) : (
+                <form onSubmit={handleSubmit}>
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <Input
+                      type="email"
+                      placeholder="you@example.com"
+                      className="flex-1 h-12 rounded-full px-5"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                    />
+                    <MagneticButton
+                      type="submit"
+                      disabled={state.status === "loading" || !email.trim()}
+                      className="group relative bg-creo-accent text-creo-bg font-heading font-semibold text-sm h-12 px-6 rounded-full flex items-center justify-center gap-2 hover:brightness-110 transition-all duration-300 accent-glow overflow-hidden whitespace-nowrap disabled:opacity-50"
                     >
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                    </svg>
-                  </span>
-                </MagneticButton>
-              </div>
+                      {/* Shimmer sweep */}
+                      <motion.span
+                        className="absolute inset-0 pointer-events-none rounded-full"
+                        style={{
+                          background:
+                            "linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.3) 50%, transparent 60%)",
+                          backgroundSize: "200% 100%",
+                        }}
+                        animate={{ backgroundPosition: ["200% 0", "-200% 0"] }}
+                        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", repeatDelay: 2 }}
+                      />
+                      <span className="relative z-10 flex items-center gap-2">
+                        {state.status === "loading" ? "Joining..." : "Get Early Access"}
+                        <svg
+                          className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          strokeWidth={2.5}
+                        >
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                        </svg>
+                      </span>
+                    </MagneticButton>
+                  </div>
 
-              <motion.p
-                className="text-creo-muted-2 text-xs font-mono mt-3"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 1.5, duration: 0.6 }}
-              >
-                No spam, ever. We&apos;ll only email you when we launch.
-              </motion.p>
+                  {state.status === "error" && (
+                    <p className="text-red-400 text-xs font-mono mt-2">
+                      {state.message}
+                    </p>
+                  )}
+
+                  <motion.p
+                    className="text-creo-muted-2 text-xs font-mono mt-3"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 1.5, duration: 0.6 }}
+                  >
+                    No spam, ever. We&apos;ll only email you when we launch.
+                  </motion.p>
+                </form>
+              )}
             </motion.div>
           </div>
 

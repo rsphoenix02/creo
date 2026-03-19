@@ -22,26 +22,9 @@ export interface DimensionMeta {
   description: string;
 }
 
-export interface PricingFeature {
-  readonly text: string;
-  readonly included: boolean;
-  readonly highlight?: boolean;
-}
-
-export interface PricingTier {
-  readonly id: "free" | "pro" | "enterprise";
-  readonly name: string;
-  readonly tagline: string;
-  readonly price: string;
-  readonly priceSuffix: string;
-  readonly recommended: boolean;
-  readonly ctaText: string;
-  readonly ctaVariant: "outline" | "accent" | "glass";
-  readonly features: readonly PricingFeature[];
-}
-
 export type AnalysisState =
   | { status: "idle" }
   | { status: "loading" }
   | { status: "success"; result: AnalysisResult }
-  | { status: "error"; message: string };
+  | { status: "error"; message: string }
+  | { status: "rate_limited"; message: string };
